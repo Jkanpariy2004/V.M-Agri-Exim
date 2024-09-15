@@ -65,7 +65,7 @@
                                 <div class="d-flex align-items-center h-100-vh">
                                     <div class="login p-50">
                                         <h1 class="mb-2">VMAE Admin</h1>
-                                        <p>Welcome back, please login to your account.</p>
+                                        <p>Welcome back, Please Change Your Password.</p>
                                         <form id="loginForm" class="mt-3 mt-sm-5">
                                             @if(session('success'))
                                             <script>
@@ -99,36 +99,31 @@
                                             <div class="row">
                                                 <div class="col-12">
                                                     <div class="form-group">
-                                                        <label class="control-label">Email*</label>
-                                                        <div class="input-group">
-                                                            <div class="input-group-prepend">
-                                                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
-                                                            </div>
-                                                            <input type="email" class="form-control" placeholder="Email" name="email" autocomplete="off" />
-                                                        </div>
-                                                        <div class="alert alert-danger d-none" id="emailError"></div>
-                                                    </div>
-                                                </div>
-                                                <div class="col-12">
-                                                    <div class="form-group">
                                                         <label class="control-label">Password*</label>
                                                         <div class="input-group">
                                                             <div class="input-group-prepend">
                                                                 <span class="input-group-text"><i class="fas fa-lock"></i></span>
                                                             </div>
-                                                            <input type="password" class="form-control" placeholder="Password" name="password" id="password" autocomplete="off" />
-                                                            <div class="input-group-append">
-                                                                <button class="btn btn-outline-primary" type="button" id="togglePassword">
-                                                                    <i class="fas fa-eye"></i>
-                                                                </button>
-                                                            </div>
+                                                            <input type="password" class="form-control" placeholder="password" name="password" autocomplete="off" />
                                                         </div>
                                                         <div class="alert alert-danger d-none" id="passwordError"></div>
                                                     </div>
                                                 </div>
+                                                <div class="col-12">
+                                                    <div class="form-group">
+                                                        <label class="control-label">Confirm Password*</label>
+                                                        <div class="input-group">
+                                                            <div class="input-group-prepend">
+                                                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                                            </div>
+                                                            <input type="text" class="form-control" placeholder="Password" name="confirm_password" autocomplete="off" />
+                                                        </div>
+                                                        <div class="alert alert-danger d-none" id="confirm_passwordError"></div>
+                                                    </div>
+                                                </div>
 
                                                 <div class="col-12 mt-3">
-                                                    <button type="submit" class="btn btn-primary text-uppercase">Sign In</button>
+                                                    <button type="submit" class="btn btn-primary text-uppercase w-100">Change Password</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -137,15 +132,14 @@
                                         <script>
                                             $(document).ready(function() {
                                                 $('#loginForm').on('submit', function(e) {
-                                                    e.preventDefault(); // Prevent default form submission
+                                                    e.preventDefault();
 
-                                                    // Clear previous error messages
                                                     $('.alert-danger').addClass('d-none').text('');
                                                     $('#responseMessage').addClass('d-none').text('');
 
                                                     $.ajax({
                                                         type: 'POST',
-                                                        url: '/login-submit',
+                                                        url: '/change-password',
                                                         data: $(this).serialize(),
                                                         success: function(response) {
                                                             Swal.fire({
@@ -155,14 +149,12 @@
                                                                 timer: 3000,
                                                                 showConfirmButton: true
                                                             }).then(() => {
-                                                                // Redirect to admin-dashboard after successful login
-                                                                window.location.href = '/admin-dashboard';
+                                                                window.location.href = '/admin';
                                                             });
                                                         },
                                                         error: function(xhr) {
                                                             let errors = xhr.responseJSON.errors;
 
-                                                            // Display general error message if exists
                                                             if (xhr.responseJSON.error) {
                                                                 Swal.fire({
                                                                     icon: 'error',
@@ -172,23 +164,12 @@
                                                                 });
                                                             }
 
-                                                            // Iterate through errors and display them in the corresponding input field
                                                             $.each(errors, function(key, value) {
                                                                 let errorField = $('#' + key + 'Error');
                                                                 let inputField = $('input[name="' + key + '"]');
-                                                                errorField.removeClass('d-none').text(value[0]); // Display first error message
-                                                                inputField.addClass('is-invalid'); // Add class to show error styling
+                                                                errorField.removeClass('d-none').text(value[0]);
+                                                                inputField.addClass('is-invalid');
                                                             });
-
-                                                            // Handle cases where there are no specific field errors but a general error
-                                                            if ($.isEmptyObject(errors)) {
-                                                                Swal.fire({
-                                                                    icon: 'error',
-                                                                    title: 'Error!',
-                                                                    text: xhr.responseJSON.error || 'Invalid login credentials.',
-                                                                    showConfirmButton: true
-                                                                });
-                                                            }
                                                         }
                                                     });
                                                 });

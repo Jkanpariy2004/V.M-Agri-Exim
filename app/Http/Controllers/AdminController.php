@@ -16,9 +16,9 @@ use App\Models\SeoSetting;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Config;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
 
 
 class AdminController extends Controller
@@ -68,31 +68,104 @@ class AdminController extends Controller
     {
         $message = [
             'email.required' => 'Please Enter Valid Email Id.',
-            'email.exists' => 'This Email Is Not Save In Database.'
+            'email.exists' => 'This Email Is Not Saved In Database.'
         ];
 
         $request->validate([
             'email' => 'required|exists:admin,email'
         ], $message);
 
-        $otp = random_int(10000000, 99999999);
+        $otp = random_int(100000, 999999);
 
-        Session::put('otp', $otp);
-        Session::put('otp_expiration', Carbon::now()->addMinutes(10));
+        $admin = admin::where('email', $request->input('email'))->first();
+
+        // Check if admin exists before proceeding
+        if (!$admin) {
+            return redirect()->back()->with('error', 'Email not found in the database.');
+        }
+
+        $admin->password_change_otp = $otp;
+        $admin->otp_expires_at = Carbon::now('Asia/Kolkata')->addMinutes(10);
+        $admin->save();
 
         $data = [
             'email' => $request->input('email'),
             'otp' => $otp,
         ];
 
+        Session::put('mail', $request->input('email'));
+
         Mail::send('admin.mail', $data, function ($message) use ($data) {
             $message->to($data['email']);
             $message->subject('Forgot Password OTP');
         });
 
-        return redirect()->back()->with(['success' => 'Email sent successfully!']);
+        return redirect('otp')->with(['success' => 'Email sent successfully!']);
     }
-    function index()
+
+
+    public function password_otp()
+    {
+        return view('admin.admin_otp');
+    }
+
+    public function SubmitOtp(Request $request)
+    {
+        $request->validate([
+            'otp' => 'required'
+        ]);
+
+        $admin = admin::where('email', Session::get('mail'))->first();
+
+        if (!$admin) {
+            return redirect()->back()->with('error', 'Admin not found. Please try again.');
+        }
+
+        if ($admin->password_change_otp == $request->input('otp')) {
+            return redirect('reset-password')->with('success', 'OTP verified successfully! You can now reset your password.');
+        } else {
+            return redirect()->back()->with('error', 'Invalid OTP. Please try again.');
+        }
+    }
+
+    public function reset_password()
+    {
+        return view('admin.admin-reset-password');
+    }
+
+    public function ResetPassword(Request $request)
+    {
+        $message = [
+            'password.required' => 'Please enter a new password.',
+            'confirm_password.required' => 'Please confirm your new password.',
+            'confirm_password.same' => 'The confirmation password does not match.',
+            'password.min' => 'The password must be at least 8 characters.',
+            'password.regex' => 'The password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+        ];
+
+        $request->validate([
+            'password' => 'required|min:8|regex:/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/',
+            'confirm_password' => 'required|same:password'
+        ], $message);
+
+        $admin = admin::where('email', Session::get('mail'))->first();
+
+        if ($admin) {
+            // $admin->password = Hash::make($request->input('password'));
+            $admin->password=$request->input('password');
+            $admin->password_change_otp = null;
+            $admin->otp_expires_at = null;
+            $admin->save();
+
+            Session::forget('mail');
+
+            return redirect('admin')->with('success', 'Password changed successfully! You can now log in.');
+        }
+
+        return redirect()->back()->with('error', 'Admin not found. Please try again.');
+    }
+
+    public function index()
     {
         if (!Session::has('email')) {
             return redirect('admin')->with('error', 'Please log in to access this page.');

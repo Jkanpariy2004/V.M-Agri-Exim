@@ -71,6 +71,10 @@ Route::get('/optimize-cache-clear', [CacheClear::class, 'optimizeCache'])->name(
 // forgot password
 Route::get('/forgot-password', [AdminController::class, 'forgot']);
 Route::get('/submit-forgot-password', [AdminController::class, 'forgot_password']);
+Route::get('/otp',[AdminController::class,'password_otp']);
+Route::post('/otp-verify',[AdminController::class,'SubmitOtp']);
+Route::get('/reset-password',[AdminController::class,'reset_password']);
+Route::post('/change-password',[AdminController::class,'ResetPassword']);
 
 // admin contact page
 Route::get('/admin-contact', [AdminController::class, 'admin_contact']);
