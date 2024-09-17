@@ -165,9 +165,9 @@
                                                                 title: 'Success!',
                                                                 text: response.success,
                                                                 timer: 3000,
+                                                                timerProgressBar: true,
                                                                 showConfirmButton: true
                                                             }).then(() => {
-                                                                // Redirect to admin-dashboard after successful login
                                                                 window.location.href = '/admin-dashboard';
                                                             });
                                                         },

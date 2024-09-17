@@ -126,7 +126,7 @@ Route::post('/test-smtp-mail', [AdminController::class, 'sendSmtpEmail']);
 // admin subscriber page
 Route::get('/admin-subscriber', [AdminController::class, 'all_subscriber']);
 Route::get('/delete-subscriber/{id}', [AdminController::class, 'subscriber_delete']);
-Route::post('/send-email/{id}', [AdminController::class, 'sendEmail']);
+Route::post('/send-email-subscriber', [AdminController::class, 'sendEmail']);
 Route::get('/admin-subscriber-mail', [AdminController::class, 'all_subscriber_mail']);
 Route::post('/admin-subscriber-send-mail', [AdminController::class, 'all_subscriber_send_mail']);
 Route::post('/bulk-delete-subscriber', [AdminController::class, 'bulkDeletesubscriber'])->name('bulk.delete.subscriber');

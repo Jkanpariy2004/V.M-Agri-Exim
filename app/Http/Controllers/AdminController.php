@@ -152,7 +152,7 @@ class AdminController extends Controller
 
         if ($admin) {
             // $admin->password = Hash::make($request->input('password'));
-            $admin->password=$request->input('password');
+            $admin->password = $request->input('password');
             $admin->password_change_otp = null;
             $admin->otp_expires_at = null;
             $admin->save();
@@ -998,13 +998,18 @@ class AdminController extends Controller
         return redirect()->back()->with(['success' => 'Subscriber Deleted Successfully!']);
     }
 
-    public function sendEmail(Request $request, $id)
+    public function sendEmail(Request $request)
     {
+        $message = [
+            'email.required' => 'Please Enter Valid Email Id.',
+            'subject.required' => 'Please Enter Mail Subject.',
+            'message.required' => 'Please Enter Mail Content here...'
+        ];
         $request->validate([
             'email' => 'required|email|max:255',
             'subject' => 'required|string|max:255',
             'message' => 'required|string',
-        ]);
+        ], $message);
 
         $data = [
             'email' => $request->input('email'),

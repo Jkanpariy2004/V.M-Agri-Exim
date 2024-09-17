@@ -149,41 +149,43 @@
                             <div class="col-12">
                                 <div class="card card-statistics p-3 rounded">
                                     <div class="table-border p-3 rounded">
-                                        @if(session('success'))
-                                        <script>
-                                            document.addEventListener("DOMContentLoaded", function() {
-                                                Swal.fire({
-                                                    icon: 'success',
-                                                    title: 'Success!',
-                                                    text: "{{ session('success') }}",
-                                                    showConfirmButton: true
+                                        @if (session('success'))
+                                            <script>
+                                                document.addEventListener("DOMContentLoaded", function() {
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: 'Success!',
+                                                        text: "{{ session('success') }}",
+                                                        showConfirmButton: true
+                                                    });
                                                 });
-                                            });
-                                        </script>
+                                            </script>
                                         @endif
 
-                                        @if(session('error'))
-                                        <script>
-                                            document.addEventListener("DOMContentLoaded", function() {
-                                                Swal.fire({
-                                                    icon: 'error',
-                                                    title: 'Error!',
-                                                    text: "{{ session('error') }}",
-                                                    showConfirmButton: true
+                                        @if (session('error'))
+                                            <script>
+                                                document.addEventListener("DOMContentLoaded", function() {
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Error!',
+                                                        text: "{{ session('error') }}",
+                                                        showConfirmButton: true
+                                                    });
                                                 });
-                                            });
-                                        </script>
+                                            </script>
                                         @endif
 
                                         <!-- Bulk Delete Form -->
-                                        <form id="bulk-delete-form" action="{{ url('/bulk-delete-subscriber') }}" method="POST">
+                                        <form id="bulk-delete-form" action="{{ url('/bulk-delete-subscriber') }}"
+                                            method="POST">
                                             @csrf
                                             <div style="display: flex;">
                                                 <div style="width: 50%; text-align: left;">
                                                     <h3>Subscriber Details</h3>
                                                 </div>
                                                 <div style="width: 50%; text-align: right;">
-                                                    <button type="button" class="btn btn-danger mb-2" id="bulk-delete-btn" disabled>
+                                                    <button type="button" class="btn btn-danger mb-2"
+                                                        id="bulk-delete-btn" disabled>
                                                         <i class="fas fa-trash-alt"></i> Bulk Delete
                                                     </button>
                                                 </div>
@@ -192,7 +194,8 @@
                                                 <table id="contact-table" class="table table-hover table-striped">
                                                     <thead>
                                                         <tr>
-                                                            <th><input type="checkbox" id="select-all" class="animated-checkbox"></th>
+                                                            <th><input type="checkbox" id="select-all"
+                                                                    class="animated-checkbox"></th>
                                                             <th>No.</th>
                                                             <th>Email</th>
                                                             <th>Action</th>
@@ -200,90 +203,21 @@
                                                     </thead>
                                                     <?php $no = 1; ?>
                                                     <tbody>
-                                                        @foreach($subscriber as $newsletter)
-                                                        <tr>
-                                                            <td><input type="checkbox" name="ids[]" class="select-item animated-checkbox" value="{{ $newsletter->id }}"></td>
-                                                            <td>{{ $no++ }}</td>
-                                                            <td>{{ $newsletter->email }}</td>
-                                                            <td>
-                                                                <!-- Send Email Button -->
-                                                                <button type="button" class="btn btn-primary animated-btn" data-toggle="modal" data-target="#emailModal{{ $newsletter->id }}">
-                                                                    <i class="fas fa-envelope"></i> Send Email
-                                                                </button>
-
-                                                                <!-- Delete Button -->
-                                                                <button type="button" class="btn btn-danger animated-btn" onclick="confirmDelete('{{ $newsletter->id }}')">
-                                                                    <i class="fas fa-trash-alt"></i> Delete
-                                                                </button>
-
-                                                                <!-- Send Email Modal -->
-                                                                <div class="modal fade animated fadeIn" id="emailModal{{ $newsletter->id }}" tabindex="-1" role="dialog" aria-labelledby="emailModalLabel{{ $newsletter->id }}" aria-hidden="true">
-                                                                    <div class="modal-dialog modal-lg-custom" role="document">
-                                                                        <div class="modal-content">
-                                                                            <div class="modal-header">
-                                                                                <h5 class="modal-title" id="emailModalLabel{{ $newsletter->id }}">
-                                                                                    <i class="fas fa-envelope"></i> Send Email
-                                                                                </h5>
-                                                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                                                    <span aria-hidden="true">&times;</span>
-                                                                                </button>
-                                                                            </div>
-                                                                            <div class="modal-body">
-                                                                                <form action="/send-email/{{ $newsletter->id }}" method="POST">
-                                                                                    @csrf
-                                                                                    <div class="form-group">
-                                                                                        <label for="email">Email</label>
-                                                                                        <input type="text" class="form-control bg-white" id="email" name="email" value="{{ $newsletter->email }}" readonly>
-                                                                                        @error('email')
-                                                                                        <div class="alert alert-danger">{{ $message }}</div>
-                                                                                        @enderror
-                                                                                    </div>
-                                                                                    <div class="form-group">
-                                                                                        <label for="subject">Subject</label>
-                                                                                        <input type="text" class="form-control" placeholder="Enter Subject" id="subject" name="subject">
-                                                                                        @error('subject')
-                                                                                        <div class="alert alert-danger">{{ $message }}</div>
-                                                                                        @enderror
-                                                                                    </div>
-                                                                                    <div class="form-group">
-                                                                                        <label for="message">Message</label>
-                                                                                        <textarea class="form-control" id="message" placeholder="Enter Message" name="message" rows="5"></textarea>
-                                                                                        @error('message')
-                                                                                        <div class="alert alert-danger">{{ $message }}</div>
-                                                                                        @enderror
-                                                                                    </div>
-                                                                                    <!-- Include Summernote CSS/JS -->
-                                                                                    <link href="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.css" rel="stylesheet">
-                                                                                    <script src="https://cdn.jsdelivr.net/npm/summernote@0.8.18/dist/summernote.min.js"></script>
-                                                                                    <script>
-                                                                                        $(document).ready(function() {
-                                                                                            $('#message').summernote({
-                                                                                                placeholder: 'Write your Mail Content here...',
-                                                                                                height: 200,
-                                                                                                toolbar: [
-                                                                                                    ['style', ['style']],
-                                                                                                    ['font', ['italic', 'bold', 'underline', 'clear']],
-                                                                                                    ['fontname', ['fontname']],
-                                                                                                    ['color', ['color']],
-                                                                                                    ['para', ['ul', 'ol', 'paragraph']],
-                                                                                                    ['insert', ['link', 'picture', 'video']]
-                                                                                                ],
-                                                                                                fontNames: ['Avenir', 'Arial', 'Helvetica', 'Comic Sans MS', 'Courier New'],
-                                                                                                fontNamesIgnoreCheck: ['Avenir']
-                                                                                            });
-                                                                                        });
-                                                                                    </script>
-                                                                                    <div>
-                                                                                        <input type="submit" class="btn btn-primary w-100" value="Send Email">
-                                                                                    </div>
-                                                                                </form>
-                                                                            </div>
-                                                                        </div>
-                                                                    </div>
-                                                                </div>
-
-                                                            </td>
-                                                        </tr>
+                                                        @foreach ($subscriber as $newsletter)
+                                                            <tr>
+                                                                <td><input type="checkbox" name="ids[]"
+                                                                        class="select-item animated-checkbox"
+                                                                        value="{{ $newsletter->id }}"></td>
+                                                                <td>{{ $no++ }}</td>
+                                                                <td>{{ $newsletter->email }}</td>
+                                                                <td>
+                                                                    <button type="button"
+                                                                        class="btn btn-danger animated-btn"
+                                                                        onclick="confirmDelete('{{ $newsletter->id }}')">
+                                                                        <i class="fas fa-trash-alt"></i> Delete
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
                                                         @endforeach
                                                     </tbody>
                                                 </table>
@@ -309,7 +243,8 @@
                                                 checkbox.addEventListener('change', function() {
                                                     const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
                                                     selectAll.checked = allChecked;
-                                                    bulkDeleteBtn.disabled = !Array.from(checkboxes).some(checkbox => checkbox.checked);
+                                                    bulkDeleteBtn.disabled = !Array.from(checkboxes).some(checkbox => checkbox
+                                                        .checked);
                                                 });
                                             });
 
@@ -353,7 +288,78 @@
                                 </div>
                             </div>
                         </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div class="card card-statistics p-3 rounded">
+                                    <div class="table-border p-3 rounded">
+                                        <div class="text-center">
+                                            <h3>Write a Mail</h3>
+                                        </div>
+                                        @if (session('success'))
+                                            <script>
+                                                document.addEventListener("DOMContentLoaded", function() {
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: 'Success!',
+                                                        text: "{{ session('success') }}",
+                                                        showConfirmButton: true
+                                                    });
+                                                });
+                                            </script>
+                                        @endif
 
+                                        @if (session('error'))
+                                            <script>
+                                                document.addEventListener("DOMContentLoaded", function() {
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Error!',
+                                                        text: "{{ session('error') }}",
+                                                        showConfirmButton: true
+                                                    });
+                                                });
+                                            </script>
+                                        @endif
+
+                                        <form method="POST" action="/send-email-subscriber">
+                                            @csrf
+                                            <div class="form-group">
+                                                <label for="mail">Sender Mail:</label>
+                                                <input type="email" class="form-control" id="mail" name="email"
+                                                    placeholder="Please Enter Sender Email Id">
+                                                @error('email')
+                                                    <div class="alert alert-danger">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="subject">Subject:</label>
+                                                <input type="text" class="form-control" id="subject" name="subject"
+                                                    placeholder="Please Enter Subject">
+                                                @error('subject')
+                                                    <div class="alert alert-danger">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="message">Message:</label>
+                                                <textarea class="form-control" id="message" name="message" rows="6" placeholder="Please Enter Message"></textarea>
+                                                @error('message')
+                                                    <div class="alert alert-danger">
+                                                        {{ $message }}
+                                                    </div>
+                                                @enderror
+                                            </div>
+                                            <div class="text-center">
+                                                <button type="submit" class="sned-mail-btn"><i class="fa-solid fa-paper-plane mr-2"></i>Send Mail</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <script>
                         $(document).ready(function() {
