@@ -67,30 +67,30 @@
                                         <h1 class="mb-2">VMAE Admin</h1>
                                         <p>Welcome back, please login to your account.</p>
                                         <form id="loginForm" class="mt-3 mt-sm-5">
-                                            @if(session('success'))
-                                            <script>
-                                                document.addEventListener("DOMContentLoaded", function() {
-                                                    Swal.fire({
-                                                        icon: 'success',
-                                                        title: 'Success!',
-                                                        text: "{{ session('success') }}",
-                                                        showConfirmButton: true
+                                            @if (session('success'))
+                                                <script>
+                                                    document.addEventListener("DOMContentLoaded", function() {
+                                                        Swal.fire({
+                                                            icon: 'success',
+                                                            title: 'Success!',
+                                                            text: "{{ session('success') }}",
+                                                            showConfirmButton: true
+                                                        });
                                                     });
-                                                });
-                                            </script>
+                                                </script>
                                             @endif
 
-                                            @if(session('error'))
-                                            <script>
-                                                document.addEventListener("DOMContentLoaded", function() {
-                                                    Swal.fire({
-                                                        icon: 'error',
-                                                        title: 'Error!',
-                                                        text: "{{ session('error') }}",
-                                                        showConfirmButton: true
+                                            @if (session('error'))
+                                                <script>
+                                                    document.addEventListener("DOMContentLoaded", function() {
+                                                        Swal.fire({
+                                                            icon: 'error',
+                                                            title: 'Error!',
+                                                            text: "{{ session('error') }}",
+                                                            showConfirmButton: true
+                                                        });
                                                     });
-                                                });
-                                            </script>
+                                                </script>
                                             @endif
                                             @csrf
                                             <!-- General response message area, if needed -->
@@ -102,9 +102,11 @@
                                                         <label class="control-label">Email*</label>
                                                         <div class="input-group">
                                                             <div class="input-group-prepend">
-                                                                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                                                                <span class="input-group-text"><i
+                                                                        class="fas fa-envelope"></i></span>
                                                             </div>
-                                                            <input type="email" class="form-control" placeholder="Email" name="email" autocomplete="off" />
+                                                            <input type="email" class="form-control"
+                                                                placeholder="Email" name="email" autocomplete="off" />
                                                         </div>
                                                         <div class="alert alert-danger d-none" id="emailError"></div>
                                                     </div>
@@ -114,11 +116,15 @@
                                                         <label class="control-label">Password*</label>
                                                         <div class="input-group">
                                                             <div class="input-group-prepend">
-                                                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                                                <span class="input-group-text"><i
+                                                                        class="fas fa-lock"></i></span>
                                                             </div>
-                                                            <input type="password" class="form-control" placeholder="Password" name="password" id="password" autocomplete="off" />
+                                                            <input type="password" class="form-control"
+                                                                placeholder="Password" name="password" id="password"
+                                                                autocomplete="off" />
                                                             <div class="input-group-append">
-                                                                <button class="btn btn-outline-primary" type="button" id="togglePassword">
+                                                                <button class="btn btn-outline-primary" type="button"
+                                                                    id="togglePassword">
                                                                     <i class="fas fa-eye"></i>
                                                                 </button>
                                                             </div>
@@ -126,9 +132,15 @@
                                                         <div class="alert alert-danger d-none" id="passwordError"></div>
                                                     </div>
                                                 </div>
-
+                                                <div class="col-12">
+                                                    <div class="d-block d-sm-flex  align-items-center">
+                                                        <a href="/forgot-password" class="ml-auto">Forgot
+                                                            Password ?</a>
+                                                    </div>
+                                                </div>
                                                 <div class="col-12 mt-3">
-                                                    <button type="submit" class="btn btn-primary text-uppercase">Sign In</button>
+                                                    <button type="submit" class="btn btn-primary text-uppercase">Sign
+                                                        In</button>
                                                 </div>
                                             </div>
                                         </form>
@@ -176,8 +188,10 @@
                                                             $.each(errors, function(key, value) {
                                                                 let errorField = $('#' + key + 'Error');
                                                                 let inputField = $('input[name="' + key + '"]');
-                                                                errorField.removeClass('d-none').text(value[0]); // Display first error message
-                                                                inputField.addClass('is-invalid'); // Add class to show error styling
+                                                                errorField.removeClass('d-none').text(value[
+                                                                    0]); // Display first error message
+                                                                inputField.addClass(
+                                                                    'is-invalid'); // Add class to show error styling
                                                             });
 
                                                             // Handle cases where there are no specific field errors but a general error
@@ -185,7 +199,8 @@
                                                                 Swal.fire({
                                                                     icon: 'error',
                                                                     title: 'Error!',
-                                                                    text: xhr.responseJSON.error || 'Invalid login credentials.',
+                                                                    text: xhr.responseJSON.error ||
+                                                                        'Invalid login credentials.',
                                                                     showConfirmButton: true
                                                                 });
                                                             }
@@ -193,7 +208,20 @@
                                                     });
                                                 });
                                             });
+                                            $(document).ready(function() {
+                                                const passwordField = $('#password');
+                                                passwordField.attr('type', 'password'); // Change to 'text' to show password by default
+                                                $('#togglePassword').find('i').removeClass('fa-eye').addClass(
+                                                    'fa-eye-slash'); // Change icon to 'eye-slash'
+
+                                                $('#togglePassword').on('click', function() {
+                                                    const type = passwordField.attr('type') === 'password' ? 'text' : 'password';
+                                                    passwordField.attr('type', type);
+                                                    $(this).find('i').toggleClass('fa-eye fa-eye-slash');
+                                                });
+                                            });
                                         </script>
+
                                     </div>
                                 </div>
                             </div>
