@@ -146,40 +146,42 @@
                             <div class="col-12">
                                 <div class="card card-statistics p-3 rounded">
                                     <div class="table-border p-3 rounded">
-                                        @if(session('d_success'))
-                                        <script>
-                                            document.addEventListener("DOMContentLoaded", function() {
-                                                Swal.fire({
-                                                    icon: 'success',
-                                                    title: 'Success!',
-                                                    text: "{{ session('d_success') }}",
-                                                    showConfirmButton: true
+                                        @if (session('d_success'))
+                                            <script>
+                                                document.addEventListener("DOMContentLoaded", function() {
+                                                    Swal.fire({
+                                                        icon: 'success',
+                                                        title: 'Success!',
+                                                        text: "{{ session('d_success') }}",
+                                                        showConfirmButton: true
+                                                    });
                                                 });
-                                            });
-                                        </script>
+                                            </script>
                                         @endif
 
-                                        @if(session('d_error'))
-                                        <script>
-                                            document.addEventListener("DOMContentLoaded", function() {
-                                                Swal.fire({
-                                                    icon: 'error',
-                                                    title: 'Error!',
-                                                    text: "{{ session('d_error') }}",
-                                                    showConfirmButton: true
+                                        @if (session('d_error'))
+                                            <script>
+                                                document.addEventListener("DOMContentLoaded", function() {
+                                                    Swal.fire({
+                                                        icon: 'error',
+                                                        title: 'Error!',
+                                                        text: "{{ session('d_error') }}",
+                                                        showConfirmButton: true
+                                                    });
                                                 });
-                                            });
-                                        </script>
+                                            </script>
                                         @endif
 
-                                        <form id="bulk-delete-form" action="{{ url('/bulk-delete-contact') }}" method="POST">
+                                        <form id="bulk-delete-form" action="{{ url('/bulk-delete-contact') }}"
+                                            method="POST">
                                             @csrf
                                             <div style="display: flex;">
                                                 <div style="width: 50%; text-align: left;">
                                                     <h3>Contact Us Details</h3>
                                                 </div>
                                                 <div style="width: 50%; text-align: right;">
-                                                    <button type="button" class="btn btn-danger mb-2" id="bulk-delete-btn" disabled>
+                                                    <button type="button" class="btn btn-danger mb-2"
+                                                        id="bulk-delete-btn" disabled>
                                                         <i class="fas fa-trash-alt"></i> Bulk Delete
                                                     </button>
                                                 </div>
@@ -188,7 +190,8 @@
                                                 <table id="contact-table" class="table table-hover table-striped">
                                                     <thead>
                                                         <tr>
-                                                            <th><input type="checkbox" id="select-all" class="animated-checkbox"></th>
+                                                            <th><input type="checkbox" id="select-all"
+                                                                    class="animated-checkbox"></th>
                                                             <th>No.</th>
                                                             <th>Name</th>
                                                             <th>Email</th>
@@ -200,21 +203,25 @@
                                                     </thead>
                                                     <?php $no = 1; ?>
                                                     <tbody>
-                                                        @foreach($contacts as $contact)
-                                                        <tr>
-                                                            <td><input type="checkbox" name="ids[]" class="select-item animated-checkbox" value="{{ $contact->id }}"></td>
-                                                            <td>{{ $no++ }}</td>
-                                                            <td>{{ $contact->name }}</td>
-                                                            <td>{{ $contact->email }}</td>
-                                                            <td>{{ $contact->subject }}</td>
-                                                            <td>{{ $contact->country }}</td>
-                                                            <td>{{ $contact->message }}</td>
-                                                            <td>
-                                                                <button type="button" class="btn btn-danger delete-btn" data-id="{{ $contact->id }}">
-                                                                    <i class="fas fa-trash-alt"></i> Delete
-                                                                </button>
-                                                            </td>
-                                                        </tr>
+                                                        @foreach ($contacts as $contact)
+                                                            <tr>
+                                                                <td><input type="checkbox" name="ids[]"
+                                                                        class="select-item animated-checkbox"
+                                                                        value="{{ $contact->id }}"></td>
+                                                                <td>{{ $no++ }}</td>
+                                                                <td>{{ $contact->name }}</td>
+                                                                <td>{{ $contact->email }}</td>
+                                                                <td>{{ $contact->subject }}</td>
+                                                                <td>{{ $contact->country }}</td>
+                                                                <td>{{ $contact->message }}</td>
+                                                                <td>
+                                                                    <button type="button"
+                                                                        class="btn btn-danger delete-btn"
+                                                                        data-id="{{ $contact->id }}">
+                                                                        <i class="fas fa-trash-alt"></i> Delete
+                                                                    </button>
+                                                                </td>
+                                                            </tr>
                                                         @endforeach
                                                     </tbody>
                                                 </table>
@@ -239,7 +246,8 @@
                                                 checkbox.addEventListener('change', function() {
                                                     const allChecked = Array.from(checkboxes).every(checkbox => checkbox.checked);
                                                     selectAll.checked = allChecked;
-                                                    bulkDeleteBtn.disabled = !Array.from(checkboxes).some(checkbox => checkbox.checked);
+                                                    bulkDeleteBtn.disabled = !Array.from(checkboxes).some(checkbox => checkbox
+                                                        .checked);
                                                 });
                                             });
 
@@ -263,7 +271,6 @@
                                         });
 
                                         document.addEventListener("DOMContentLoaded", function() {
-                                            // Use event delegation to handle click events on dynamically added elements
                                             document.body.addEventListener('click', function(e) {
                                                 if (e.target && e.target.classList.contains('delete-btn')) {
                                                     const contactId = e.target.getAttribute('data-id');
@@ -278,7 +285,6 @@
                                                         confirmButtonText: 'Yes, delete it!'
                                                     }).then((result) => {
                                                         if (result.isConfirmed) {
-                                                            // Redirect to delete URL if confirmed
                                                             window.location.href = `/delete-contact/${contactId}`;
                                                         }
                                                     });
@@ -301,69 +307,74 @@
                     <div class="row">
                         <div class="col-12">
                             <div class="card card-statistics p-3 rounded">
-                                <div class="text-center">
-                                    <h3>Write a Mail</h3>
-                                </div>
-                                @if(session('success'))
-                                <script>
-                                    document.addEventListener("DOMContentLoaded", function() {
-                                        Swal.fire({
-                                            icon: 'success',
-                                            title: 'Success!',
-                                            text: "{{ session('success') }}", // This fetches the success message from the session
-                                            showConfirmButton: true
-                                        });
-                                    });
-                                </script>
-                                @endif
-
-                                @if(session('error'))
-                                <script>
-                                    document.addEventListener("DOMContentLoaded", function() {
-                                        Swal.fire({
-                                            icon: 'error',
-                                            title: 'Error!',
-                                            text: "{{ session('error') }}", // This fetches the error message from the session
-                                            showConfirmButton: true
-                                        });
-                                    });
-                                </script>
-                                @endif
-
-
-                                <form method="POST" action="/send-mail">
-                                    @csrf
-                                    <div class="form-group">
-                                        <label for="mail">Sender Mail:</label>
-                                        <input type="text" class="form-control" id="mail" name="mail" placeholder="Please Enter Sender Email Id">
-                                        @error('mail')
-                                        <div class="alert alert-danger">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="subject">Subject:</label>
-                                        <input type="text" class="form-control" id="subject" name="subject" placeholder="Please Enter Subject">
-                                        @error('subject')
-                                        <div class="alert alert-danger">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                    <div class="form-group">
-                                        <label for="message">Message:</label>
-                                        <textarea class="form-control" id="message" name="message" rows="6" placeholder="Please Enter Message"></textarea>
-                                        @error('message')
-                                        <div class="alert alert-danger">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
+                                <div class="table-border p-3 rounded">
                                     <div class="text-center">
-                                        <button type="submit" class="sned-mail-btn"><i class="fa-solid fa-paper-plane mr-2"></i>Send Mail</button>
+                                        <h3>Write a Mail</h3>
                                     </div>
-                                </form>
+                                    @if (session('success'))
+                                        <script>
+                                            document.addEventListener("DOMContentLoaded", function() {
+                                                Swal.fire({
+                                                    icon: 'success',
+                                                    title: 'Success!',
+                                                    text: "{{ session('success') }}",
+                                                    showConfirmButton: true
+                                                });
+                                            });
+                                        </script>
+                                    @endif
+
+                                    @if (session('error'))
+                                        <script>
+                                            document.addEventListener("DOMContentLoaded", function() {
+                                                Swal.fire({
+                                                    icon: 'error',
+                                                    title: 'Error!',
+                                                    text: "{{ session('error') }}",
+                                                    showConfirmButton: true
+                                                });
+                                            });
+                                        </script>
+                                    @endif
+
+
+                                    <form method="POST" action="/send-mail">
+                                        @csrf
+                                        <div class="form-group">
+                                            <label for="mail">Sender Mail:</label>
+                                            <input type="text" class="form-control" id="mail" name="mail"
+                                                placeholder="Please Enter Sender Email Id">
+                                            @error('mail')
+                                                <div class="alert alert-danger">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="subject">Subject:</label>
+                                            <input type="text" class="form-control" id="subject" name="subject"
+                                                placeholder="Please Enter Subject">
+                                            @error('subject')
+                                                <div class="alert alert-danger">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="message">Message:</label>
+                                            <textarea class="form-control" id="message" name="message" rows="6" placeholder="Please Enter Message"></textarea>
+                                            @error('message')
+                                                <div class="alert alert-danger">
+                                                    {{ $message }}
+                                                </div>
+                                            @enderror
+                                        </div>
+                                        <div class="text-center">
+                                            <button type="submit" class="sned-mail-btn"><i
+                                                    class="fa-solid fa-paper-plane mr-2"></i>Send Mail</button>
+                                        </div>
+                                    </form>
+                                </div>
                             </div>
                         </div>
                     </div>
